@@ -17,7 +17,7 @@ public class AuthFilter extends HttpFilter {
     public void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpSession session = req.getSession();
         if (session.getAttribute("user") == null) {
-            res.sendRedirect("./login.jsp");
+            res.sendRedirect("/login.jsp");
         }
         chain.doFilter(req, res);
     }
