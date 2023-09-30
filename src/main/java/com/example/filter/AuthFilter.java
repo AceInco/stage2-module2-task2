@@ -14,7 +14,7 @@ import java.io.IOException;
 @WebFilter(urlPatterns = {"/user/*"})
 public class AuthFilter extends HttpFilter {
     @Override
-    protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpSession session = req.getSession();
         if (session.getAttribute("user") == null) {
             RequestDispatcher dispatcher = req.getRequestDispatcher("./login.jsp");
