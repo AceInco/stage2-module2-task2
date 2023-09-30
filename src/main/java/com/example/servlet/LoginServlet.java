@@ -18,28 +18,40 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-        if (session == null || session.getAttribute("user") == null) {
-            RequestDispatcher dispatcher = req.getRequestDispatcher("./login.jsp");
+        try {
+            HttpSession session = req.getSession();
+            RequestDispatcher dispatcher = null;
+            if (session == null || session.getAttribute("user") == null) {
+                dispatcher = req.getRequestDispatcher("./login.jsp");
+
+            } else {
+                dispatcher = req.getRequestDispatcher("/user/hello.jsp");;
+            }
             dispatcher.forward(req, resp);
-        } else {
-            RequestDispatcher dispatcher = req.getRequestDispatcher("/user/hello.jsp");
-            dispatcher.forward(req, resp);
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String login = req.getParameter("login");
-        String password = req.getParameter("password");
+        try {
+            String login = req.getParameter("login");
+            String password = req.getParameter("password");
+            if (Users.getInstance().getUsers().contains(login) && !password.isEmpty()) {
+                HttpSession session = req.getSession();
+                session.setAttribute("user", login);
+                resp.sendRedirect("/user/hello.jsp");
 
-        if ((login != null && password != null) && (Users.getInstance().getUsers().contains(login) && !Objects.requireNonNull(password).isEmpty())) {
-            req.getSession().setAttribute("user", req.getParameter("login"));
-            resp.sendRedirect("/user/hello.jsp");
-        } else {
-            RequestDispatcher dispatcher = req.getRequestDispatcher("./login.jsp");
-            dispatcher.forward(req, resp);
+            } else {
+                RequestDispatcher dispatcher = req.getRequestDispatcher("./login.jsp");
+                dispatcher.forward(req, resp);
+            }
+
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
 }
